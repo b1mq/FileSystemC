@@ -57,7 +57,18 @@
             }
             return null;
         }
-        public void SafePoemsInFile(string directory,string filename)
+        //public void SafePoemsInFile(string directory, string filename)
+        //{
+        //    if (Directory.Exists(directory))
+        //    {
+        //        string path = Path.Combine(directory, $"{filename}.txt");
+        //        File.Create(path).Close();
+
+        //        var lines = Poems.Select(poem => poem.ToString());
+        //        File.WriteAllLines(path, lines);
+        //    }
+        //}
+        public void SafePoemsInFile(string directory, string filename)
         {
             if (Directory.Exists(directory))
             {
@@ -66,11 +77,25 @@
                     File.Create(@$"{directory}\{filename}.txt");
                 }
                 string path = @$"{directory}\{filename}.txt";
-                foreach (var poem in Poems)
+
+                    var lines = Poems.Select(poem => poem.ToString());
+                    File.WriteAllLines(path, lines);
+            }
+        }
+        public void LoadPoemsFromFile(string path)
+        {
+            try
+            {
+                foreach (var item in File.ReadLines(path)) 
                 {
-                    string text = string.Join("\n", poem);
-                    File.WriteAllText(path, text);
+                    
                 }
+
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
