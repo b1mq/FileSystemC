@@ -1,4 +1,6 @@
-﻿namespace FileS.Domain.Entities
+﻿using System.Text.Json;
+
+namespace FileS.Domain.Entities
 {
     public  class PoemManager
     {
@@ -57,45 +59,77 @@
             }
             return null;
         }
-        //public void SafePoemsInFile(string directory, string filename)
-        //{
-        //    if (Directory.Exists(directory))
-        //    {
-        //        string path = Path.Combine(directory, $"{filename}.txt");
-        //        File.Create(path).Close();
-
-        //        var lines = Poems.Select(poem => poem.ToString());
-        //        File.WriteAllLines(path, lines);
-        //    }
-        //}
+        public void DisplayNameOfPoems()
+        {
+            foreach(var poem in Poems)
+            {
+                Console.WriteLine(poem.Name);
+            }
+        }
+        public void DisplayNameOfAutors()
+        {
+            foreach (var poem in Poems)
+            {
+                Console.WriteLine(poem.Autor);
+            }
+        }
+        public void DisplayPoemWithAutor(string name)
+        {
+            var poem = Poems.FirstOrDefault(p => p.Autor == name);
+            Console.WriteLine(poem);
+        }
+        public void DisplayPoemWithName(string name)
+        {
+            var poem = Poems.FirstOrDefault(p => p.Name == name);
+            Console.WriteLine(poem);
+        }
+        public void DisplayPoemWithYear(int year, string directory, string filename)
+        {
+            var poem = Poems.Where(p => p.Year == year);
+            string path = Path.Combine(directory, filename + ".json");
+            File.WriteAllText(path, JsonSerializer.Serialize(poem));
+        }
+        public void DisplayPoemWithAutor(string name, string directory, string filename)
+        {
+            var poem = Poems.Where(p => p.Autor == name);
+            string path = Path.Combine(directory, filename + ".json");
+            File.WriteAllText(path, JsonSerializer.Serialize(poem));
+        }
+        public void DisplayPoemWithLength(int length, string directory, string filename)
+        {
+            var poem = Poems.Where(p => p.Description.Length == length );
+            string path = Path.Combine(directory, filename + ".json");
+            File.WriteAllText(path, JsonSerializer.Serialize(poem));
+        }
+        public void DisplayPoemWithName(string name,string directory,string filename)
+        {
+            var poem = Poems.Where(p => p.Name == name);
+            string path = Path.Combine(directory, filename + ".json");
+            File.WriteAllText(path,JsonSerializer.Serialize(poem));
+        }
         public void SafePoemsInFile(string directory, string filename)
         {
             if (Directory.Exists(directory))
             {
-                if (!File.Exists(@$"{directory}\{filename}.txt"))
-                {
-                    File.Create(@$"{directory}\{filename}.txt");
-                }
-                string path = @$"{directory}\{filename}.txt";
-
-                    var lines = Poems.Select(poem => poem.ToString());
-                    File.WriteAllLines(path, lines);
+                string path = Path.Combine(directory, filename + ".json");
+                File.WriteAllText(path, JsonSerializer.Serialize(Poems, new JsonSerializerOptions { WriteIndented = true }));
             }
         }
-        public void LoadPoemsFromFile(string path)
+        public void LoadPoemsFromJson(string directory,string filename)
         {
-            try
+            if (Directory.Exists(directory))
             {
-                foreach (var item in File.ReadLines(path)) 
+                string path = Path.Combine(directory, filename + ".json");
+                try
                 {
-                    
+                    string json = File.ReadAllText(path);
+                    Poems = JsonSerializer.Deserialize<List<Poem>>(json);
                 }
+                catch (JsonException ex )
+                {
 
-            }
-            catch (Exception)
-            {
-
-                throw;
+                    throw new JsonException("Something is wrong - ", ex);
+                }
             }
         }
     }

@@ -4,6 +4,7 @@ var PoemM = new PoemManager();
 
 void GeneratePoems()
 {
+    //просто набросал что бы не заморачиватсья
     string[] poets = new string[]
 {
     "William Shakespeare",
@@ -34,8 +35,10 @@ void GeneratePoems()
         string poet = poets[rand.Next(0, poets.Length)];
         string poms = poems[rand.Next(0, poems.Length)];
         int year = years[rand.Next(0, years.Length)];
-        PoemM.AddPoem(poet,poms,year,"0");
+        PoemM.AddPoem(poms,poet, year,"0");
     }
-    PoemM.SafePoemsInFile(@"C:/Users/Admin/Desktop/MyPoem", "MYPoem");
+    PoemM.LoadPoemsFromJson(@"C:/Users/Admin/Desktop/MyPoem", "MyPoem");
+    PoemM.DisplayPoemWithName("Daffodils", @"C:/Users/Admin/Desktop/MyPoem", "MyDPoem");
+    PoemM.DisplayPoemWithYear(1915, @"C:/Users/Admin/Desktop/MyPoem", "MyYearPoem");
 }
 GeneratePoems();
